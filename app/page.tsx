@@ -1,4 +1,7 @@
-import { Check, FileText, LockKeyhole, Sparkles } from "lucide-react";
+import { Check, FileText, LockKeyhole, Plus, Search, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { TemporaryToast } from "@/app/components/temporary-toast";
+import { getToastFromSearchParam } from "@/lib/toast";
 import { planningItems } from "./components/app-shell";
 
 const memoPreview = `# Product ideas
@@ -7,9 +10,16 @@ const memoPreview = `# Product ideas
 - Review Markdown renderer rules
 - Link auth sessions to local SQLite`;
 
-export default function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const toast = getToastFromSearchParam((await searchParams)?.toast);
+
   return (
     <main className="flex flex-1 flex-col gap-8 py-8 sm:py-10">
+      {toast ? <TemporaryToast {...toast} /> : null}
       <section className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,.95fr)]">
         <div className="flex min-h-[520px] flex-col justify-between rounded-lg border border-black/10 bg-white p-6 shadow-sm sm:p-8">
           <div className="space-y-8">
@@ -20,12 +30,28 @@ export default function Home() {
 
             <div className="max-w-3xl space-y-5">
               <h1 className="text-4xl font-semibold tracking-normal text-[#1d1d1f] sm:text-6xl">
-                Memo Studio
+                TagNote
               </h1>
               <p className="max-w-2xl text-lg leading-8 text-[#515154]">
-                A refined foundation for Markdown notes, category-led
-                organisation, searchable tags, and future user authentication.
+                A private Markdown memo workspace for creating, reading, and
+                searching notes with categories and tags after you sign in.
               </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Link
+                className="flex min-h-11 items-center gap-2 rounded-md bg-[#1d1d1f] px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-black"
+                href="/signin"
+              >
+                <LockKeyhole size={16} strokeWidth={1.8} aria-hidden="true" />
+                Sign in to unlock memos
+              </Link>
+              <Link
+                className="flex min-h-11 items-center gap-2 rounded-md border border-black/10 bg-white/75 px-4 text-sm font-medium text-[#1d1d1f] shadow-sm transition-colors hover:bg-white"
+                href="/signup"
+              >
+                Create an account
+              </Link>
             </div>
           </div>
 
@@ -119,31 +145,49 @@ export default function Home() {
             <LockKeyhole size={19} strokeWidth={1.8} aria-hidden="true" />
           </div>
           <h2 className="text-xl font-semibold text-[#1d1d1f]">
-            Built for personal knowledge
+            Memo features are available after sign-in
           </h2>
           <p className="max-w-xl text-sm leading-6 text-[#6e6e73]">
-            The layout leaves room for authentication states, private libraries,
-            and editor workflows without committing to the data model too early.
+            Create, view, and search memos are kept behind the local session.
+            Visitors can preview the product direction here, then sign in or
+            create an account when they are ready to use the workspace.
           </p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <Link
+              className="flex min-h-10 items-center gap-2 rounded-md bg-[#1d1d1f] px-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-black"
+              href="/signin"
+            >
+              <LockKeyhole size={16} strokeWidth={1.8} aria-hidden="true" />
+              Sign in to memo workspace
+            </Link>
+            <Link
+              className="flex min-h-10 items-center rounded-md border border-black/10 bg-white/75 px-3 text-sm font-medium text-[#1d1d1f] shadow-sm transition-colors hover:bg-white"
+              href="/signup"
+            >
+              Create account
+            </Link>
+          </div>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-3">
-          {["Markdown conversion", "Category filters", "User sessions"].map(
-            (item) => (
+          {[
+            { icon: Check, label: "Markdown conversion" },
+            { icon: Plus, label: "Category filters" },
+            { icon: Search, label: "User sessions" },
+          ].map(({ icon: Icon, label }) => (
               <div
                 className="flex items-center gap-3 rounded-lg border border-black/10 bg-[#f5f5f7] p-4 text-sm font-medium text-[#1d1d1f]"
-                key={item}
+                key={label}
               >
-                <Check
+                <Icon
                   className="shrink-0 text-[#34c759]"
                   size={17}
                   strokeWidth={2}
                   aria-hidden="true"
                 />
-                {item}
+                {label}
               </div>
-            ),
-          )}
+            ))}
         </div>
       </section>
     </main>

@@ -1,4 +1,4 @@
-# Memo Studio Design System
+# TagNote Design System
 
 Use this document before adding or changing UI, pages, layouts, or feature placeholders. The goal is a consistent, modern, premium memo app UI inspired by Apple's design system without copying Apple product surfaces directly.
 

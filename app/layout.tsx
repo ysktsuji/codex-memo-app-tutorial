@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppShell } from "./components/app-shell";
+import { getCurrentSession } from "@/lib/auth";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,22 +15,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Memo Studio",
+  title: "TagNote",
   description: "A private Markdown memo workspace with categories and tags.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getCurrentSession();
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-        <AppShell>{children}</AppShell>
+        <AppShell session={session}>{children}</AppShell>
       </body>
     </html>
   );
